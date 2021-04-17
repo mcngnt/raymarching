@@ -18,7 +18,10 @@ int main()
     renderSprt.setTexture(renderTex.getTexture());
     renderTex.clear();
 
-    sf::Vector3f camPos(0.f, 0.f, 0.f);
+    sf::Vector3f camPos(0.f, 3.f, 0.f);
+    int tick = 0;
+    bool doLight = false;
+    float blendFactor = 1.f;
 
     sf::Shader* raymarch = new sf::Shader;
     raymarch->loadFromFile("res/raymarch.frag", sf::Shader::Fragment);
@@ -61,10 +64,26 @@ int main()
                 {
                     camPos.z -= .5f;
                 }
+                if (event.key.code == sf::Keyboard::E)
+                {
+                    doLight = !doLight;
+                }
+                if (event.key.code == sf::Keyboard::Up)
+                {
+                    blendFactor += .1f;
+                }
+                if (event.key.code == sf::Keyboard::Down)
+                {
+                    blendFactor -= .1f;
+                }
             }
         }
+        tick++;
 
         raymarch->setUniform("camPos", camPos);
+        raymarch->setUniform("tick", tick);
+        raymarch->setUniform("doLight", doLight);
+        raymarch->setUniform("blendFactor", blendFactor);
         window.draw(renderSprt, raymarch);
         window.display();
     }
